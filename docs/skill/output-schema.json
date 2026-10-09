@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DestinyAtlasReport",
+  "type": "object",
+  "required": ["schemaVersion", "engineVersion", "input", "place", "time", "numerology", "tarot", "bazi", "astrology", "personality", "timeline", "synthesis", "limitations"],
+  "properties": {
+    "schemaVersion": { "const": "1.0" },
+    "engineVersion": { "type": "string" },
+    "input": { "$ref": "input-schema.json" },
+    "place": { "type": "object" },
+    "time": { "type": "object" },
+    "numerology": { "type": "object" },
+    "tarot": { "type": "object" },
+    "bazi": { "type": "object" },
+    "astrology": { "type": "object" },
+    "personality": { "type": "object" },
+    "timeline": { "type": "array", "minItems": 24, "maxItems": 24 },
+    "synthesis": { "type": "object" },
+    "limitations": { "type": "array", "items": { "type": "string" } }
+  }
+}
