@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { CELESTIAL_BODIES } from '../data/celestialBodies'
 import type { AstrologyResult } from '../types'
 
 export function NatalChart({ data }: { data: AstrologyResult }) {
@@ -6,9 +7,12 @@ export function NatalChart({ data }: { data: AstrologyResult }) {
   const radius = 112
   const [selected, setSelected] = useState(data.positions[0]?.body ?? '')
   const active = data.positions.find((planet) => planet.body === selected)
+  const story = CELESTIAL_BODIES.find((body) => body.name === selected)
+  const aspects = data.aspects.filter((aspect) => aspect.bodies.includes(selected))
   return (
+    <>
     <div className="chart-shell">
-      <svg className="natal-chart" viewBox="0 0 300 300" role="img" aria-label="可交互本命行星黄经圆盘">
+      <svg className="natal-chart" viewBox="0 0 300 300" role="group" aria-label="可交互本命行星黄经圆盘">
         <defs>
           <radialGradient id="chart-glow">
             <stop stopColor="#cba7ff" stopOpacity=".28" />
@@ -48,9 +52,9 @@ export function NatalChart({ data }: { data: AstrologyResult }) {
           const y = center + r * Math.sin(angle)
           return (
             <g key={planet.body} className={`planet-node ${selected === planet.body ? 'selected' : ''}`} role="button" tabIndex={0}
-              aria-label={`${planet.body} ${planet.sign} ${planet.degreeInSign.toFixed(2)}度`}
+              aria-label={`${planet.body} ${planet.sign} ${planet.degreeInSign.toFixed(2)}度`} aria-pressed={selected === planet.body}
               onClick={() => setSelected(planet.body)}
-              onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') setSelected(planet.body) }}>
+              onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); setSelected(planet.body) } }}>
               <circle cx={x} cy={y} r="10" className="planet-halo" />
               <circle cx={x} cy={y} r="5" className="planet" />
               <text x={x} y={y + 2.5}>{planet.body[0]}</text>
@@ -61,5 +65,19 @@ export function NatalChart({ data }: { data: AstrologyResult }) {
       </svg>
       {active && <div className="chart-readout" aria-live="polite"><span>{active.body}</span><strong>{active.sign} {active.degreeInSign.toFixed(2)}°</strong><small>黄经 {active.longitude.toFixed(4)}°</small></div>}
     </div>
+    <div className="planet-controls">
+      <p className="interaction-hint">选择星体，查看你的天文坐标 <span aria-hidden="true">↙</span></p>
+      <div className="planet-list">{data.positions.map((planet) => (
+        <button type="button" key={planet.body} aria-label={`选择${planet.body} ${planet.sign}`} aria-pressed={selected === planet.body} onClick={() => setSelected(planet.body)}>
+          <b>{planet.body}</b><span>{planet.sign} {planet.degreeInSign.toFixed(2)}°</span><code>{planet.longitude.toFixed(4)}°</code>
+        </button>
+      ))}</div>
+      {story && <div className="planet-story" aria-live="polite" aria-atomic="true">
+        <p className="eyebrow">{story.english} · 象征解读</p>
+        <h3>{story.symbol} {story.theme}</h3><p>{story.question}</p>
+        <small>本命相位：{aspects.length ? aspects.map((aspect) => `${aspect.bodies.find((body) => body !== selected)} ${aspect.type}（${aspect.orb}°）`).join(' · ') : '当前容许度内无主要相位'}</small>
+      </div>}
+    </div>
+    </>
   )
 }
