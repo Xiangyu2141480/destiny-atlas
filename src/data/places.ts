@@ -53,6 +53,7 @@ export const PLACES: Place[] = [
   { id: 'wuhu', name: '芜湖 / Wuhu', country: '中国·安徽', latitude: 31.3525, longitude: 118.4331, timezone: 'Asia/Shanghai' },
   { id: 'xiamen', name: '厦门 / Xiamen', country: '中国·福建', latitude: 24.4798, longitude: 118.0894, timezone: 'Asia/Shanghai' },
   { id: 'quanzhou', name: '泉州 / Quanzhou', country: '中国·福建', latitude: 24.8741, longitude: 118.6757, timezone: 'Asia/Shanghai' },
+  { id: 'ningde', name: '宁德 / Ningde', country: '中国·福建', latitude: 26.6656, longitude: 119.5477, timezone: 'Asia/Shanghai' },
   { id: 'ganzhou', name: '赣州 / Ganzhou', country: '中国·江西', latitude: 25.8311, longitude: 114.935, timezone: 'Asia/Shanghai' },
   { id: 'qingdao', name: '青岛 / Qingdao', country: '中国·山东', latitude: 36.0671, longitude: 120.3826, timezone: 'Asia/Shanghai' },
   { id: 'yantai', name: '烟台 / Yantai', country: '中国·山东', latitude: 37.4638, longitude: 121.4479, timezone: 'Asia/Shanghai' },

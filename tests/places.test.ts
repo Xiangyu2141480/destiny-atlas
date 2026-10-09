@@ -4,7 +4,7 @@ import { PLACES } from '../src/data/places'
 const addedPrefectureCityIds = [
   'baoding', 'tangshan', 'qinhuangdao', 'datong', 'baotou', 'dalian', 'anshan',
   'jilin-city', 'qiqihar', 'suzhou-js', 'wuxi', 'changzhou', 'xuzhou', 'ningbo',
-  'wenzhou', 'jiaxing', 'shaoxing', 'wuhu', 'xiamen', 'quanzhou', 'ganzhou',
+  'wenzhou', 'jiaxing', 'shaoxing', 'wuhu', 'xiamen', 'quanzhou', 'ningde', 'ganzhou',
   'qingdao', 'yantai', 'weifang', 'luoyang', 'yichang', 'xiangyang', 'zhuzhou',
   'shenzhen', 'zhuhai', 'foshan', 'dongguan', 'huizhou', 'guilin', 'sanya',
   'mianyang', 'xianyang', 'kashgar',
@@ -13,8 +13,10 @@ const addedPrefectureCityIds = [
 describe('offline place gazetteer', () => {
   it('includes at least 30 additional Chinese prefecture-level cities', () => {
     const ids = new Set(PLACES.map((place) => place.id))
-    expect(addedPrefectureCityIds).toHaveLength(38)
+    expect(addedPrefectureCityIds).toHaveLength(39)
     expect(addedPrefectureCityIds.every((id) => ids.has(id))).toBe(true)
+    expect(PLACES.find((place) => place.id === 'ningde')?.country).toBe('中国·福建')
+    expect(PLACES.find((place) => place.id === 'suzhou-js')?.country).toBe('中国·江苏')
   })
 
   it('uses valid coordinates and Asia/Shanghai for added mainland cities', () => {
