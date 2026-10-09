@@ -4,5 +4,6 @@ coverage/
 *.local
 *.log
 *.tsbuildinfo
+online-*.png
 .DS_Store
 report.json

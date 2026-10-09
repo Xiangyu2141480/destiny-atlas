@@ -72,7 +72,7 @@ export function PersonalityCards({ selected }: { selected: Mbti }) {
               onClick={() => setPreviewed(type)}
               style={{ '--personality-color': palette.ink, '--personality-glow': palette.glow } as CSSProperties}
             >
-              <img src={imagePath(type)} alt="" loading="lazy" />
+              <img src={imagePath(type)} alt="" loading="lazy" decoding="async" />
               <span className="personality-card-sigil" aria-hidden="true"><Sigil type={type} /></span>
               <span className="personality-card-label"><b>{type}</b><small>{palette.name}</small></span>
             </button>

@@ -3,6 +3,16 @@ import { describe, expect, it } from 'vitest'
 import App from '../src/App'
 
 describe('application flow', () => {
+  it('lets the user pause and resume continuous motion', () => {
+    render(<App />)
+    const pause = screen.getByRole('button', { name: '暂停动态' })
+    fireEvent.click(pause)
+    expect(screen.getByRole('button', { name: '开启动态' })).toHaveAttribute('aria-pressed', 'true')
+    expect(document.documentElement.dataset.motion).toBe('paused')
+    fireEvent.click(screen.getByRole('button', { name: '开启动态' }))
+    expect(document.documentElement.dataset.motion).toBe('running')
+  })
+
   it('uses the themed city picker and updates the selected place', () => {
     render(<App />)
     fireEvent.click(screen.getByRole('button', { name: '选择出生城市' }))

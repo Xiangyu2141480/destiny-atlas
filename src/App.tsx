@@ -51,6 +51,7 @@ function App() {
   const [error, setError] = useState('')
   const [selectedMonth, setSelectedMonth] = useState(0)
   const [tarotFlipped, setTarotFlipped] = useState(false)
+  const [motionPaused, setMotionPaused] = useState(false)
   const heroRef = useRef<HTMLElement>(null)
   const current = report?.timeline[selectedMonth]
   const selectedFocus = input.focus ?? 'growth'
@@ -129,7 +130,22 @@ function App() {
         <div className="rune-field" aria-hidden="true"><span>☿</span><span>△</span><span>☉</span><span>♄</span><span>◇</span></div>
         <nav>
           <a className="brand" href="#" aria-label="Destiny Atlas 首页"><i>✦</i> DESTINY <span>ATLAS</span></a>
-          <div className="nav-meta"><span>ARCANE OBSERVATORY</span><span className="privacy-pill">本地计算 · 不上传</span></div>
+          <div className="nav-meta">
+            <span>ARCANE OBSERVATORY</span>
+            <button
+              type="button"
+              className="motion-toggle"
+              aria-pressed={motionPaused}
+              onClick={() => {
+                const paused = !motionPaused
+                setMotionPaused(paused)
+                document.documentElement.dataset.motion = paused ? 'paused' : 'running'
+              }}
+            >
+              {motionPaused ? '开启动态' : '暂停动态'}
+            </button>
+            <span className="privacy-pill">本地计算 · 不上传</span>
+          </div>
         </nav>
         <div className="hero-grid">
           <section className="intro">
