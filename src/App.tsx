@@ -1,12 +1,15 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent, type PointerEvent } from 'react'
 import { ZodError } from 'zod'
+import { PlainLanguageSummary } from './components/PlainLanguageSummary'
+import { PeriodExplorer } from './components/PeriodExplorer'
+import { PlaceSourceCredit } from './components/PlaceSourceCredit'
 import { BirthForm } from './components/BirthForm'
 import { HeroIntro } from './components/HeroIntro'
 import { ReportNavigation } from './components/ReportNavigation'
 import { NatalChart } from './components/NatalChart'
 import { PersonalityCards } from './components/PersonalityCards'
 import { generateDestinyReport } from './engines/report'
-import { type BirthInput, type DestinyReport, type Focus } from './types'
+import { type BirthInput, type DestinyReport } from './types'
 
 const initial: BirthInput = {
   date: '2002-10-03',
@@ -14,10 +17,6 @@ const initial: BirthInput = {
   placeId: 'guangzhou',
   mbti: 'ENFJ',
   focus: 'growth',
-}
-
-const focusLabels: Record<Focus, string> = {
-  career: '事业', finance: '财富', relationships: '关系', growth: '成长', balance: '平衡',
 }
 
 function downloadJson(report: DestinyReport) {
@@ -34,12 +33,9 @@ function App() {
   const [input, setInput] = useState<BirthInput>(initial)
   const [report, setReport] = useState<DestinyReport>()
   const [error, setError] = useState('')
-  const [selectedMonth, setSelectedMonth] = useState(0)
   const [tarotFlipped, setTarotFlipped] = useState(false)
   const [motionPaused, setMotionPaused] = useState(false)
   const heroRef = useRef<HTMLElement>(null)
-  const current = report?.timeline[selectedMonth]
-  const selectedFocus = input.focus ?? 'growth'
 
   useEffect(() => {
     const sections = Array.from(document.querySelectorAll<HTMLElement>('.panel, .report-hero'))
@@ -68,6 +64,27 @@ function App() {
     }
   }, [report])
 
+  useEffect(() => {
+    const closedForScreen = new Set<HTMLDetailsElement>()
+    const expandForPrint = () => {
+      document.querySelectorAll<HTMLDetailsElement>('#report details:not([open])').forEach((detail) => {
+        closedForScreen.add(detail)
+        detail.open = true
+      })
+    }
+    const restoreAfterPrint = () => {
+      closedForScreen.forEach((detail) => { detail.open = false })
+      closedForScreen.clear()
+    }
+    window.addEventListener('beforeprint', expandForPrint)
+    window.addEventListener('afterprint', restoreAfterPrint)
+    return () => {
+      window.removeEventListener('beforeprint', expandForPrint)
+      window.removeEventListener('afterprint', restoreAfterPrint)
+      restoreAfterPrint()
+    }
+  }, [])
+
   function moveHero(event: PointerEvent<HTMLElement>) {
     if (motionPaused || event.pointerType === 'touch' || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return
     const bounds = event.currentTarget.getBoundingClientRect()
@@ -82,7 +99,6 @@ function App() {
     try {
       setReport(generateDestinyReport(input))
       setError('')
-      setSelectedMonth(0)
       setTarotFlipped(false)
       requestAnimationFrame(() => {
         const section = document.querySelector('#report')
@@ -148,6 +164,7 @@ function App() {
             <p className="eyebrow">YOUR PERSONAL CELESTIAL ATLAS</p>
             <h2>{report.input.name || '你的'}命运图谱</h2>
             <p>{report.input.date} {report.input.time} · {report.place.name} · {report.input.mbti}</p>
+            <PlaceSourceCredit place={report.place} />
             <div className="metric-grid">
               <div><small>生命路径</small><strong>{report.numerology.lifePath}</strong><p>{report.numerology.formula}</p></div>
               <div><small>日主</small><strong>{report.bazi.dayMaster}</strong><p>{report.bazi.lunarDate}</p></div>
@@ -155,6 +172,7 @@ function App() {
               <div><small>人格框架</small><strong>{report.personality.type}</strong><p>{report.personality.title}</p></div>
             </div>
             <div className="trace"><b>时间追踪</b><code>{report.time.localIso}</code><span>→</span><code>{report.time.utcIso}</code></div>
+            <PlainLanguageSummary explanation={report.explanation} />
           </section>
 
           <section id="s2" className="panel">
@@ -187,19 +205,11 @@ function App() {
             <div className="personality-reading"><p className="eyebrow">PERSONALITY · ORIGINAL SIGIL ATLAS</p><h2>{report.personality.type} · {report.personality.title}</h2><p>{report.personality.summary}</p><ul>{report.personality.cautions.map((item) => <li key={item}>{item}</li>)}</ul><PersonalityCards key={report.personality.type} selected={report.personality.type} /></div>
           </section>
 
-          <section id="s5" className="panel">
-            <div className="section-title"><span>05</span><div><h2>Your Next 24 Months</h2><p>点击月份查看计算依据与行动提示</p></div></div>
-            <p className="interaction-hint"><span>24 个月 · 每月一个新的观察角度</span><span>左右滑动探索 ↔</span></p><div className="timeline-wrap"><div className="timeline" role="list">{report.timeline.map((item, index) => <button key={item.month} className={selectedMonth === index ? 'active' : ''} onClick={() => setSelectedMonth(index)} aria-pressed={selectedMonth === index}><i /><small>{item.month}</small><b>{item.personalMonth}</b><span>{item.themes[0]}</span></button>)}</div></div>
-            {current && <div className="month-detail">
-              <div><p className="eyebrow">{current.month}</p><h3>{current.themes.join(' · ')}</h3><p>个人年 {current.personalYear} / 个人月 {current.personalMonth} · 流月 {current.baziMonth} · 年度牌 {current.tarot.nameZh}</p></div>
-              <div><b>天文采样</b><p>{current.transitNote}</p></div>
-              <div><b>{focusLabels[selectedFocus]}行动提示</b><p>{current.guidance[selectedFocus]}</p></div>
-            </div>}
-          </section>
+          <PeriodExplorer key={report.generatedAt} report={report} />
 
           <section id="s6" className="panel">
             <div className="section-title"><span>06</span><div><h2>Cross-System Insights</h2><p>保留一致与冲突，不计算“准确率”</p></div></div>
-            <div className="insights"><div><h3>可比较主题</h3>{report.synthesis.agreements.map((x) => <p key={x}>{x}</p>)}</div><div><h3>方法张力</h3>{report.synthesis.tensions.map((x) => <p key={x}>{x}</p>)}</div><div><h3>现实路线</h3>{report.synthesis.actions.map((x) => <p key={x}>{x}</p>)}</div></div>
+            <div className="insights"><div><h3>可以怎样看自己</h3>{report.synthesis.agreements.map((x) => <p key={x}>{x}</p>)}</div><div><h3>哪些话别当成定论</h3>{report.synthesis.tensions.map((x) => <p key={x}>{x}</p>)}</div><div><h3>下一步怎么做</h3>{report.synthesis.actions.map((x) => <p key={x}>{x}</p>)}</div></div>
           </section>
 
           <section id="s7" className="panel limitations">

@@ -78,3 +78,11 @@ Planned work: auditable global offline places, more authority-backed boundary fi
 Project code is [MIT licensed](LICENSE). Direct production dependencies are MIT at the lockfile versions; run `npm run licenses` to verify recursively.
 
 For cultural, entertainment, and self-reflection use only. Destiny Atlas does not scientifically predict fate and is not medical, psychological, legal, financial, or other professional advice. Personal input remains local by default; see [privacy](docs/privacy.md).
+
+## 0.2: detailed readings, yearly view, and optional online lookup
+
+Reports now include plain-language explanations, actionable advice in five areas, and a five-calendar-year view with quarterly plans alongside the existing 24 months. These are transparent cultural/reflection rules, not event forecasts. Schema `1.1` preserves prior fields and adds `explanation`, `yearlyTimeline`, and monthly `reading`.
+
+Optional Open-Meteo/GeoNames lookup sends only the explicitly entered city keyword after a search click. Birth data and reports remain local. Results require selection before being applied; the offline gazetteer and manual coordinates remain available. Provider attribution and data-license metadata are retained in the report.
+
+The geocoding provider's published README permits open-source/non-commercial use and declares API data CC BY-NC 4.0. Review provider terms before commercial deployment or replace the adapter. No AGPL server implementation is included; this project's code remains MIT. The CLI continues to operate offline.

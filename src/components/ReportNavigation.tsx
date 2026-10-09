@@ -1,4 +1,4 @@
-const sections = ['摘要', '八字', '西方天文', '原型与人格', '24月时间轴', '综合建议', '方法与局限']
+const sections = ['摘要', '八字', '西方天文', '原型与人格', '年度与月度', '综合建议', '方法与局限']
 
 export function ReportNavigation({ onDownload }: { onDownload: () => void }) {
   return (

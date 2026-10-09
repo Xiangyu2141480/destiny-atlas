@@ -1,9 +1,11 @@
 import type { FormEvent } from 'react'
 import { ArcaneSelect } from './ArcaneSelect'
+import { OnlineCitySearch } from './OnlineCitySearch'
+import { PlaceSourceCredit } from './PlaceSourceCredit'
 import { PLACES } from '../data/places'
-import { MBTI_TYPES, type BirthInput, type Focus } from '../types'
+import { MBTI_TYPES, type BirthInput, type Focus, type Place } from '../types'
 
-const emptyCustomPlace = {
+const emptyCustomPlace: Place = {
   id: 'custom' as const,
   name: '',
   country: '自定义地点',
@@ -32,6 +34,9 @@ interface BirthFormProps {
 export function BirthForm({ input, setInput, submit, error }: BirthFormProps) {
   const customPlace = input.customPlace ?? emptyCustomPlace
   const selectedFocus = input.focus ?? 'growth'
+  function updateCustomPlace(patch: Partial<Place>) {
+    setInput({ ...input, customPlace: { ...customPlace, ...patch, source: customPlace.source ? { ...customPlace.source, modified: true } : undefined } })
+  }
   return (
           <form id="birth-form" className="birth-form glass" autoComplete="off" onSubmit={submit}>
             <div className="form-heading"><span aria-hidden="true" className="form-seal">✧</span><div><p className="eyebrow">YOUR OBSERVATION BEGINS</p><h2>校准你的出生坐标</h2><p>写下出生时刻，开启一场自我探索。</p></div></div>
@@ -64,15 +69,16 @@ export function BirthForm({ input, setInput, submit, error }: BirthFormProps) {
             ) : (
               <fieldset className="custom-place">
                 <legend>自定义坐标 <small>经校验后进入相同确定性计算</small></legend>
-                <label><span>城市名称 *</span><input required aria-label="自定义城市名称" value={customPlace.name} onChange={(event) => setInput({ ...input, customPlace: { ...customPlace, name: event.target.value } })} placeholder="例如：阿勒泰" /></label>
-                <label><span>IANA 时区 *</span><input required aria-label="IANA 时区" aria-describedby="timezone-hint" value={customPlace.timezone} onChange={(event) => setInput({ ...input, customPlace: { ...customPlace, timezone: event.target.value } })} placeholder="例如：Asia/Shanghai" /><small id="timezone-hint" className="field-hint">中国大陆统一使用 Asia/Shanghai</small></label>
+                <label><span>城市名称 *</span><input required aria-label="自定义城市名称" value={customPlace.name} onChange={(event) => updateCustomPlace({ name: event.target.value })} placeholder="例如：阿勒泰" /></label>
+                <label><span>IANA 时区 *</span><input required aria-label="IANA 时区" aria-describedby="timezone-hint" value={customPlace.timezone} onChange={(event) => updateCustomPlace({ timezone: event.target.value })} placeholder="例如：Asia/Shanghai" /><small id="timezone-hint" className="field-hint">中国大陆统一使用 Asia/Shanghai</small></label>
                 <div className="two">
-                  <label><span>纬度 *</span><input required type="number" min="-90" max="90" step="any" aria-label="纬度" value={customPlace.latitude} onChange={(event) => setInput({ ...input, customPlace: { ...customPlace, latitude: event.target.valueAsNumber } })} /></label>
-                  <label><span>经度 *</span><input required type="number" min="-180" max="180" step="any" aria-label="经度" value={customPlace.longitude} onChange={(event) => setInput({ ...input, customPlace: { ...customPlace, longitude: event.target.valueAsNumber } })} /></label>
+                  <label><span>纬度 *</span><input required type="number" min="-90" max="90" step="any" aria-label="纬度" value={customPlace.latitude} onChange={(event) => updateCustomPlace({ latitude: event.target.valueAsNumber })} /></label>
+                  <label><span>经度 *</span><input required type="number" min="-180" max="180" step="any" aria-label="经度" value={customPlace.longitude} onChange={(event) => updateCustomPlace({ longitude: event.target.valueAsNumber })} /></label>
                 </div>
-                <p className="field-hint">请输入十进制度数：北纬、东经为正；南纬、西经为负</p>
+                <p className="field-hint">请输入十进制度数：北纬、东经为正；南纬、西经为负</p><PlaceSourceCredit place={customPlace} />
               </fieldset>
             )}
+            <OnlineCitySearch onChoose={(place) => setInput({ ...input, placeId: 'custom', customPlace: { ...place, id: 'custom' } })} />
             <div className="two">
               <label><span>人格坐标 · MBTI</span>
                 <ArcaneSelect
@@ -101,7 +107,7 @@ export function BirthForm({ input, setInput, submit, error }: BirthFormProps) {
             </details>
             {error && <p className="error" role="alert">{error}</p>}
             <button className="primary" type="submit"><span>开启观测 · 生成我的命运图谱</span><b>↗</b></button>
-            <p className="form-privacy"><span aria-hidden="true">◈</span> 本地计算 · 无需注册 · 数据不上传</p>
+            <p className="form-privacy"><span aria-hidden="true">◈</span> 本地计算 · 无需注册 · 出生信息不上传</p>
             <p className="fine">文化娱乐与自我探索用途，不构成医疗、法律、投资或人生决策建议。</p>
           </form>
   )

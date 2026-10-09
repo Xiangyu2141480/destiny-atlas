@@ -2,20 +2,251 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "DestinyAtlasReport",
   "type": "object",
-  "required": ["schemaVersion", "engineVersion", "input", "place", "time", "numerology", "tarot", "bazi", "astrology", "personality", "timeline", "synthesis", "limitations"],
+  "required": [
+    "schemaVersion",
+    "engineVersion",
+    "input",
+    "place",
+    "time",
+    "numerology",
+    "tarot",
+    "bazi",
+    "astrology",
+    "personality",
+    "timeline",
+    "synthesis",
+    "limitations",
+    "yearlyTimeline",
+    "explanation"
+  ],
   "properties": {
-    "schemaVersion": { "const": "1.0" },
-    "engineVersion": { "type": "string" },
-    "input": { "$ref": "input-schema.json" },
-    "place": { "type": "object" },
-    "time": { "type": "object" },
-    "numerology": { "type": "object" },
-    "tarot": { "type": "object" },
-    "bazi": { "type": "object" },
-    "astrology": { "type": "object" },
-    "personality": { "type": "object" },
-    "timeline": { "type": "array", "minItems": 24, "maxItems": 24 },
-    "synthesis": { "type": "object" },
-    "limitations": { "type": "array", "items": { "type": "string" } }
+    "schemaVersion": {
+      "const": "1.1"
+    },
+    "engineVersion": {
+      "type": "string"
+    },
+    "input": {
+      "$ref": "input-schema.json"
+    },
+    "place": {
+      "type": "object"
+    },
+    "time": {
+      "type": "object"
+    },
+    "numerology": {
+      "type": "object"
+    },
+    "tarot": {
+      "type": "object"
+    },
+    "bazi": {
+      "type": "object"
+    },
+    "astrology": {
+      "type": "object"
+    },
+    "personality": {
+      "type": "object"
+    },
+    "timeline": {
+      "type": "array",
+      "minItems": 24,
+      "maxItems": 24,
+      "items": {
+        "type": "object",
+        "required": [
+          "month",
+          "personalYear",
+          "personalMonth",
+          "tarot",
+          "baziMonth",
+          "themes",
+          "transitNote",
+          "guidance",
+          "reading"
+        ],
+        "properties": {
+          "reading": {
+            "$ref": "#/$defs/periodReading"
+          }
+        }
+      }
+    },
+    "synthesis": {
+      "type": "object"
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "yearlyTimeline": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "required": [
+          "year",
+          "personalYear",
+          "tarot",
+          "reading",
+          "quarters"
+        ],
+        "properties": {
+          "year": {
+            "type": "integer"
+          },
+          "personalYear": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9
+          },
+          "tarot": {
+            "type": "object"
+          },
+          "reading": {
+            "$ref": "#/$defs/periodReading"
+          },
+          "quarters": {
+            "type": "array",
+            "minItems": 4,
+            "maxItems": 4,
+            "items": {
+              "type": "object",
+              "required": [
+                "label",
+                "summary",
+                "months"
+              ],
+              "properties": {
+                "label": {
+                  "type": "string"
+                },
+                "summary": {
+                  "type": "string"
+                },
+                "months": {
+                  "type": "array",
+                  "minItems": 3,
+                  "maxItems": 3
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "explanation": {
+      "type": "object",
+      "required": [
+        "introduction",
+        "highlights",
+        "firstSteps"
+      ],
+      "properties": {
+        "introduction": {
+          "type": "string"
+        },
+        "highlights": {
+          "type": "array",
+          "minItems": 6,
+          "items": {
+            "type": "object",
+            "required": [
+              "title",
+              "meaning",
+              "basis",
+              "action"
+            ]
+          }
+        },
+        "firstSteps": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "domainReading": {
+      "type": "object",
+      "required": [
+        "meaning",
+        "actions",
+        "watchOut"
+      ],
+      "properties": {
+        "meaning": {
+          "type": "string"
+        },
+        "actions": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "type": "string"
+          }
+        },
+        "watchOut": {
+          "type": "string"
+        }
+      }
+    },
+    "periodReading": {
+      "type": "object",
+      "required": [
+        "heading",
+        "overview",
+        "basis",
+        "domains"
+      ],
+      "properties": {
+        "heading": {
+          "type": "string"
+        },
+        "overview": {
+          "type": "string"
+        },
+        "basis": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "domains": {
+          "type": "object",
+          "required": [
+            "career",
+            "finance",
+            "relationships",
+            "growth",
+            "balance"
+          ],
+          "properties": {
+            "career": {
+              "$ref": "#/$defs/domainReading"
+            },
+            "finance": {
+              "$ref": "#/$defs/domainReading"
+            },
+            "relationships": {
+              "$ref": "#/$defs/domainReading"
+            },
+            "growth": {
+              "$ref": "#/$defs/domainReading"
+            },
+            "balance": {
+              "$ref": "#/$defs/domainReading"
+            }
+          }
+        }
+      }
+    }
   }
 }

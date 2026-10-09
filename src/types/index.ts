@@ -13,6 +13,7 @@ export interface Place {
   latitude: number
   longitude: number
   timezone: string
+  source?: { provider: 'open-meteo'; id: number; license: 'CC BY-NC 4.0'; modified: boolean }
 }
 
 export interface BirthInput {
@@ -101,10 +102,11 @@ export interface TimelineMonth {
   themes: string[]
   transitNote: string
   guidance: Record<Focus, string>
+  reading: PeriodReading
 }
 
 export interface DestinyReport {
-  schemaVersion: '1.0'
+  schemaVersion: '1.1'
   engineVersion: string
   generatedAt: string
   input: BirthInput
@@ -116,6 +118,41 @@ export interface DestinyReport {
   astrology: AstrologyResult
   personality: { type: Mbti; title: string; summary: string; strengths: string[]; cautions: string[] }
   timeline: TimelineMonth[]
+  yearlyTimeline: TimelineYear[]
+  explanation: ReportExplanation
   synthesis: { agreements: string[]; tensions: string[]; actions: string[] }
   limitations: string[]
+}
+
+export interface DomainReading {
+  meaning: string
+  actions: string[]
+  watchOut: string
+}
+
+export interface PeriodReading {
+  heading: string
+  overview: string
+  basis: string[]
+  domains: Record<Focus, DomainReading>
+}
+
+export interface YearQuarter {
+  label: string
+  summary: string
+  months: Array<{ month: string; personalMonth: number; themes: string[]; guidance: Record<Focus, string> }>
+}
+
+export interface TimelineYear {
+  year: number
+  personalYear: number
+  tarot: TarotCard
+  reading: PeriodReading
+  quarters: YearQuarter[]
+}
+
+export interface ReportExplanation {
+  introduction: string
+  highlights: Array<{ title: string; meaning: string; basis: string; action: string }>
+  firstSteps: string[]
 }
