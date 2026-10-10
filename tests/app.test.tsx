@@ -1,6 +1,7 @@
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import App from '../src/App'
+import { selectDetailedReport } from './helpers'
 
 describe('application flow', () => {
   it('lets the user pause and resume continuous motion', () => {
@@ -30,7 +31,10 @@ describe('application flow', () => {
 
   it('renders and generates a report from the public sample', () => {
     render(<App />)
+    fireEvent.click(screen.getByText('更多观测设置'))
+    fireEvent.change(screen.getByLabelText(/时间轴起始月/), { target: { value: '2026-10' } })
     fireEvent.click(screen.getByRole('button', { name: /生成我的命运图谱/ }))
+    selectDetailedReport()
     expect(screen.getByText('Your Next 24 Months')).toBeInTheDocument()
     expect(screen.getByText('生命路径').parentElement).toHaveTextContent('8')
     expect(screen.getByText(/年度牌 节制/)).toBeInTheDocument()
@@ -49,7 +53,8 @@ describe('application flow', () => {
     fireEvent.change(screen.getByLabelText('纬度'), { target: { value: '35' } })
     fireEvent.change(screen.getByLabelText('经度'), { target: { value: '140' } })
     fireEvent.click(screen.getByRole('button', { name: /生成我的命运图谱/ }))
-    expect(screen.getByText(/测试城/)).toBeInTheDocument()
+    selectDetailedReport()
+    expect(within(screen.getByRole('region', { name: '详细报告' })).getByText(/测试城/)).toBeInTheDocument()
     expect(screen.getByText(/2002-10-02T17:00:00/)).toBeInTheDocument()
   })
 

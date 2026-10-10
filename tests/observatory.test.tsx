@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import App from '../src/App'
+import { selectDetailedReport } from './helpers'
 
 describe('observatory interactions', () => {
   it('reveals a reflection question from the central body and resets it when switching bodies', () => {
@@ -32,6 +33,7 @@ describe('observatory interactions', () => {
     fireEvent.change(screen.getByLabelText(/时间轴起始月/), { target: { value: '2027-01' } })
     fireEvent.click(summary)
     fireEvent.click(screen.getByRole('button', { name: /生成我的命运图谱/ }))
+    selectDetailedReport()
     expect(screen.getByRole('heading', { name: '观测者命运图谱' })).toBeInTheDocument()
     expect(document.querySelector('.timeline button')).toHaveTextContent('2027-01')
   })
@@ -39,6 +41,7 @@ describe('observatory interactions', () => {
   it('selects overlapping planets through the readable planet controls', () => {
     render(<App />)
     fireEvent.click(screen.getByRole('button', { name: /生成我的命运图谱/ }))
+    selectDetailedReport()
     fireEvent.click(screen.getByRole('button', { name: /^选择月亮/ }))
     expect(document.querySelector('.chart-readout')).toHaveTextContent('月亮')
     expect(screen.getByRole('button', { name: /^选择月亮/ })).toHaveAttribute('aria-pressed', 'true')

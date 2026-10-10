@@ -5,18 +5,22 @@ const focusNames: Record<Focus, string> = {
   career: '事业与学习', finance: '钱与消费', relationships: '人际与感情', growth: '成长与习惯', balance: '生活与精力',
 }
 
-export function PeriodExplorer({ report }: { report: DestinyReport }) {
-  const [unit, setUnit] = useState<'month' | 'year'>('month')
+export function PeriodExplorer({ report, unit, onUnitChange: setUnit, focus, onFocusChange: setFocus }: {
+  report: DestinyReport
+  unit: 'month' | 'year'
+  onUnitChange: (unit: 'month' | 'year') => void
+  focus: Focus
+  onFocusChange: (focus: Focus) => void
+}) {
   const [selectedMonth, setSelectedMonth] = useState(0)
   const [selectedYear, setSelectedYear] = useState(0)
-  const [focus, setFocus] = useState<Focus>(report.input.focus ?? 'growth')
   const month = report.timeline[selectedMonth]
   const year = report.yearlyTimeline[selectedYear]
   const reading = unit === 'month' ? month.reading : year.reading
   const advice = reading.domains[focus]
 
   return (
-    <section id="s5" className="panel period-explorer">
+    <section id="s5" className="panel period-explorer" tabIndex={-1}>
       <div className="section-title"><span>05</span><div><h2>{unit === 'month' ? 'Your Next 24 Months' : 'Year by Year'}</h2><p>按月看小行动，按年看大方向</p></div></div>
       <div className="period-tabs" role="group" aria-label="选择时间粒度">
         <button type="button" aria-pressed={unit === 'month'} onClick={() => setUnit('month')}>按月看 · 24 个月</button>

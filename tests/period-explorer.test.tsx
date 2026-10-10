@@ -1,6 +1,7 @@
 import { fireEvent, render, screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import App from '../src/App'
+import { selectDetailedReport } from './helpers'
 
 describe('plain-language period explorer', () => {
   it('switches from months to a complete annual reading and another focus area', () => {
@@ -8,6 +9,7 @@ describe('plain-language period explorer', () => {
     fireEvent.click(screen.getByText('更多观测设置'))
     fireEvent.change(screen.getByLabelText(/时间轴起始月/), { target: { value: '2026-10' } })
     fireEvent.click(screen.getByRole('button', { name: /生成我的命运图谱/ }))
+    selectDetailedReport()
     expect(screen.getByRole('heading', { name: '先用大白话说重点' })).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: '按年看 · 5 年' }))
     fireEvent.click(screen.getByRole('button', { name: /查看 2027 年/ }))

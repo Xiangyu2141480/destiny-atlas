@@ -7,6 +7,7 @@ export function HeroIntro() {
       <h1>Read the sky.<br /><em>Map the self.</em></h1>
       <p className="intro-subtitle">循星而行，观照自我。</p>
       <p className="lede">让时间、星辰与古老的文化符号，<br />成为理解自己的另一种视角。</p>
+      <a className="mobile-form-shortcut" href="#birth-form">直接填写出生信息 <span aria-hidden="true">↓</span></a>
       <div className="hero-orbit" id="celestial-study"><CelestialInstrument /></div>
       <div className="system-list" aria-label="五种探索视角">
         <span><i aria-hidden="true">☷</i>八字</span><span><i aria-hidden="true">☉</i>天文</span>
