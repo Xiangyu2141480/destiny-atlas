@@ -2,6 +2,8 @@
 
 Destiny Atlas 的报告生成仍在本地浏览器或 CLI 内完成，不需要账户，不包含广告、追踪或分析 SDK。输入和报告只在内存中保留，刷新后不会写入 Local Storage、Cookie 或 IndexedDB。JSON 与打印由用户主动操作，在本机生成。
 
+阅读模式可通过 URL 的 `view=summary` 或 `view=detailed` 分享；只有版本选项进入 URL，不包含出生资料、关注领域或生成结果。切换版本复用内存中的报告，不发起网络查询。打印保存当前可见版本；JSON 导出仍包含完整报告，请自行确认分享对象。
+
 ## 可选联网城市查询
 
 只有在“联网查找更多城市”中点击“联网搜索”或按 Enter 时，前端才向 `https://geocoding-api.open-meteo.com/v1/search` 发出请求。

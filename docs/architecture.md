@@ -26,3 +26,9 @@ Deployment uses Vite's `VITE_BASE_PATH`; GitHub Actions sets it to `/<repository
 The optional UI-only adapter `services/onlinePlaces.ts` calls the fixed Open-Meteo geocoding endpoint. `OnlineCitySearch` sends only a city keyword after a deliberate action, cancels stale requests, times out after 8 seconds, and requires selection. Validated coordinates/timezone are mapped to `customPlace`; source/license metadata travels with the place and is marked modified if the user edits it. Nothing changes the curated offline gazetteer.
 
 Schema version 1.1 adds yearly readings and explanations. There is no account system, API key storage, AI backend, automated browsing, or server component.
+
+## Reading modes (UI 0.3)
+
+`App` owns the generated report and reading mode. `ReportReader` renders `CompactReport` or `DetailedReport` over that same object. It shares focus and period-unit state; the detailed pane is mounted only after the user chooses it, then kept hidden between switches so chart/gallery/period selections survive. Generating a new report resets these selections. No presentation mode enters `BirthInput` or the exported schema.
+
+Mode selectors use native radio groups with unique names; only `view=summary|detailed` is written to the URL. Hidden panes are explicitly excluded from layout, accessibility, and printing. Before-print expansion targets only the active pane. The toolbar owns save/export controls for both modes; full JSON export always uses the unmodified report.

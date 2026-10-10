@@ -2,6 +2,7 @@ import type { FormEvent } from 'react'
 import { ArcaneSelect } from './ArcaneSelect'
 import { OnlineCitySearch } from './OnlineCitySearch'
 import { PlaceSourceCredit } from './PlaceSourceCredit'
+import { ReportModeSelector, type ReportMode } from './ReportModeSelector'
 import { PLACES } from '../data/places'
 import { MBTI_TYPES, type BirthInput, type Focus, type Place } from '../types'
 
@@ -29,9 +30,11 @@ interface BirthFormProps {
   setInput: (input: BirthInput) => void
   submit: (event: FormEvent) => void
   error: string
+  mode: ReportMode
+  onModeChange: (mode: ReportMode) => void
 }
 
-export function BirthForm({ input, setInput, submit, error }: BirthFormProps) {
+export function BirthForm({ input, setInput, submit, error, mode, onModeChange }: BirthFormProps) {
   const customPlace = input.customPlace ?? emptyCustomPlace
   const selectedFocus = input.focus ?? 'growth'
   function updateCustomPlace(patch: Partial<Place>) {
@@ -40,6 +43,7 @@ export function BirthForm({ input, setInput, submit, error }: BirthFormProps) {
   return (
           <form id="birth-form" className="birth-form glass" autoComplete="off" onSubmit={submit}>
             <div className="form-heading"><span aria-hidden="true" className="form-seal">✧</span><div><p className="eyebrow">YOUR OBSERVATION BEGINS</p><h2>校准你的出生坐标</h2><p>写下出生时刻，开启一场自我探索。</p></div></div>
+            <ReportModeSelector value={mode} onChange={onModeChange} label="生成报告版本" />
 
             <div className="two">
               <label><span>出生日期 *</span><input type="date" required value={input.date} onChange={(e) => setInput({ ...input, date: e.target.value })} /></label>

@@ -86,3 +86,9 @@ Reports now include plain-language explanations, actionable advice in five areas
 Optional Open-Meteo/GeoNames lookup sends only the explicitly entered city keyword after a search click. Birth data and reports remain local. Results require selection before being applied; the offline gazetteer and manual coordinates remain available. Provider attribution and data-license metadata are retained in the report.
 
 The geocoding provider's published README permits open-source/non-commercial use and declares API data CC BY-NC 4.0. Review provider terms before commercial deployment or replace the adapter. No AGPL server implementation is included; this project's code remains MIT. The CLI continues to operate offline.
+
+## 0.3: summary and detailed reading modes
+
+The default summary shows a few personal labels, the starting month's focus, three practical actions, and the starting year's reminder. Detailed mode retains all existing charts, periods, and methodology. Switch before generation or while reading; both modes reuse the same report without recalculation. Advice focus is shared, and detailed selections survive switching away and back. A summary-first session does not mount the chart or personality gallery.
+
+Use `?view=summary` or `?view=detailed` to share a mode. No birth data is stored in the URL. Printing includes only the active mode; JSON export remains complete. Algorithms and report schema 1.1 are unchanged.

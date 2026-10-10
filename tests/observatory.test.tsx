@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import App from '../src/App'
+import { selectDetailedReport } from './helpers'
 
 describe('observatory interactions', () => {
   it('reveals a reflection question from the central body and resets it when switching bodies', () => {
@@ -26,6 +27,7 @@ describe('observatory interactions', () => {
 
   it('keeps optional observation settings in the generated report after collapsing them', () => {
     render(<App />)
+    selectDetailedReport()
     const summary = screen.getByText('更多观测设置')
     fireEvent.click(summary)
     fireEvent.change(screen.getByPlaceholderText('如何称呼你'), { target: { value: '观测者' } })
@@ -38,6 +40,7 @@ describe('observatory interactions', () => {
 
   it('selects overlapping planets through the readable planet controls', () => {
     render(<App />)
+    selectDetailedReport()
     fireEvent.click(screen.getByRole('button', { name: /生成我的命运图谱/ }))
     fireEvent.click(screen.getByRole('button', { name: /^选择月亮/ }))
     expect(document.querySelector('.chart-readout')).toHaveTextContent('月亮')
