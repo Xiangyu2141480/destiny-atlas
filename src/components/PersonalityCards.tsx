@@ -43,7 +43,7 @@ export function PersonalityCards({ selected }: { selected: Mbti }) {
   return (
     <div className="personality-gallery" aria-label="原创四色 MBTI 16 人格插画">
       <div className="personality-gallery-heading">
-        <div><b>16 型人格插画图鉴</b><small>点击卡片可预览，标有 NATAL 的卡片是你的本命人格</small></div>
+        <div><b>16 型人格插画图鉴</b><small>点击或横向滑动预览 · NATAL 标记本命人格</small></div>
         {previewed !== selected && <button type="button" onClick={() => setPreviewed(selected)}>返回本命 {selected}</button>}
       </div>
       <figure

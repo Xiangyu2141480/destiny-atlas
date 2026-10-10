@@ -8,6 +8,7 @@ import { calculateNumerology, personalMonth, personalYear } from './numerology'
 import { personalityProfile } from './personality'
 import { birthCards, yearCard } from './tarot'
 import { getPlace } from '../data/places'
+import { createYearlyTimeline, describePeriod, explainReport } from './interpretation'
 import { MBTI_TYPES, type BirthInput, type DestinyReport, type Focus, type TimelineMonth } from '../types'
 
 export const birthInputSchema = z.object({
@@ -21,6 +22,7 @@ export const birthInputSchema = z.object({
     country: z.string().trim().min(1).max(80),
     latitude: z.number().min(-90, '纬度须在 -90 至 90 之间').max(90, '纬度须在 -90 至 90 之间'),
     longitude: z.number().min(-180, '经度须在 -180 至 180 之间').max(180, '经度须在 -180 至 180 之间'),
+    source: z.object({ provider: z.literal('open-meteo'), id: z.number().int().positive(), license: z.literal('CC BY-NC 4.0'), modified: z.boolean() }).optional(),
     timezone: z.string().trim().min(1, '请输入 IANA 时区').refine((zone) => {
       try {
         new Intl.DateTimeFormat('en', { timeZone: zone }).format()
@@ -33,7 +35,7 @@ export const birthInputSchema = z.object({
   mbti: z.enum(MBTI_TYPES),
   trueSolarTime: z.boolean().optional(),
   focus: z.enum(['career', 'finance', 'relationships', 'growth', 'balance']).optional(),
-  startMonth: z.string().regex(/^\d{4}-\d{2}$/).optional(),
+  startMonth: z.string().regex(/^\d{4}-(?:0[1-9]|1[0-2])$/, '起始月须为有效的 YYYY-MM').optional(),
 }).superRefine((input, context) => {
   if (input.placeId === 'custom' && !input.customPlace) {
     context.addIssue({ code: 'custom', path: ['customPlace'], message: '请完整填写自定义城市信息' })
@@ -58,11 +60,11 @@ function monthPillar(month: DateTime): string {
   return lunar.getEightChar().getMonth()
 }
 
-function createTimeline(input: BirthInput, natal: ReturnType<typeof calculateAstrology>): TimelineMonth[] {
+function createTimeline(input: BirthInput, natal: ReturnType<typeof calculateAstrology>, now: Date): TimelineMonth[] {
   const rawStart = input.startMonth
     ? DateTime.fromFormat(input.startMonth, 'yyyy-MM', { zone: 'utc' })
-    : DateTime.utc().startOf('month')
-  const start = rawStart.isValid ? rawStart : DateTime.utc().startOf('month')
+    : DateTime.fromJSDate(now, { zone: 'utc' }).startOf('month')
+  const start = rawStart.isValid ? rawStart : DateTime.fromJSDate(now, { zone: 'utc' }).startOf('month')
   return Array.from({ length: 24 }, (_, index) => {
     const current = start.plus({ months: index })
     const py = personalYear(input.date, current.year)
@@ -80,6 +82,7 @@ function createTimeline(input: BirthInput, natal: ReturnType<typeof calculateAst
       themes: [...themeByNumber[pm], ...tarot.keywords.slice(0, 1)],
       transitNote: monthlyTransitNote(current.toJSDate(), natal),
       guidance: guide,
+      reading: describePeriod(pm, tarot, current.toFormat('yyyy-MM'), 'month'),
     }
   })
 }
@@ -92,26 +95,31 @@ export function generateDestinyReport(raw: BirthInput, now = new Date()): Destin
   const bazi = calculateBazi(time)
   const astrology = calculateAstrology(time.utcIso)
   const born = birthCards(input.date)
-  const timeline = createTimeline(input, astrology)
+  const timeline = createTimeline(input, astrology, now)
   const years = [...new Set(timeline.map((item) => Number(item.month.slice(0, 4))))]
   const yearly = Object.fromEntries(years.map((year) => [String(year), yearCard(input.date, year)]))
+  const personality = personalityProfile(input.mbti)
+  const tarot = { ...born, yearly }
+  const yearlyTimeline = createYearlyTimeline(input, Number(timeline[0].month.slice(0, 4)))
   return {
-    schemaVersion: '1.0',
-    engineVersion: '0.1.0',
+    schemaVersion: '1.1',
+    engineVersion: '0.2.0',
     generatedAt: now.toISOString(),
     input,
     place,
     time,
     numerology,
-    tarot: { ...born, yearly },
+    tarot,
     bazi,
     astrology,
-    personality: personalityProfile(input.mbti),
+    personality,
     timeline,
+    yearlyTimeline,
+    explanation: explainReport({ input, numerology, tarot, bazi, astrology, personality }),
     synthesis: {
-      agreements: [`生命路径 ${numerology.lifePath} 与未来个人月份提供可比较的周期主题`, `${input.mbti} 偏好与塔罗原型可作为不同来源的反思提示`],
-      tensions: ['MBTI描述、传统命理与象征系统的方法论不同；相似主题不构成独立科学证据', '月初行运采样与整月生活经历不应建立确定因果'],
-      actions: ['将主题改写为可验证的小目标', '重要财务、医疗、法律或关系决策应依据现实证据与专业意见', '每月复盘实际发生与象征提示的差异，避免确认偏误'],
+      agreements: [`生命路径 ${numerology.lifePath} 可以用来回看自己的做事方式；个人年和个人月帮助你安排不同层级的反思。`, `${input.mbti} 和本命牌“${born.birth.nameZh}”提供了两种提问角度。符合自己的部分可以试用，不符合的部分不必勉强认同。`],
+      tensions: ['不同体系有时说法相近，有时相互矛盾。它们不是互相证明，也不会因为放在一起就变得更准。', '天文采样记录了某个时刻的角度关系，不能据此断定整个月会发生什么。'],
+      actions: ['从上面的建议中只挑一件，写清什么时候做、做到什么程度。', '涉及钱、健康、法律或重要关系时，先看事实、资源和专业意见。', '每月回看哪些建议真的有帮助，也记录没有对上的地方。'],
     },
     limitations: [
       '本产品用于文化、娱乐与自我探索，不提供科学预测。',

@@ -78,3 +78,13 @@ npm run cli -- docs/skill/examples/input.json report.json
 项目代码采用 [MIT License](LICENSE)。生产依赖均为 MIT，锁定版本见 `package-lock.json`；可运行 `npm run licenses` 复核。
 
 本项目用于文化、娱乐和自我探索，不声称科学预测命运，不构成医疗、心理、法律、财务或其他专业建议。个人数据默认只在本地处理，详见 [隐私说明](docs/privacy.md)。
+
+## 0.2：大白话解读、年度视图与可选联网
+
+报告增加六项基础解读、五个生活领域的解释/行动/提醒，并可在 24 个月和 5 个自然年之间切换。年度从起始月所在年份开始，每年完整覆盖 1—12 月，按季度给出小行动。它们来自明确的本地规则，不是 AI 随机生成或具体事件预报。
+
+“联网查找更多城市”使用 Open-Meteo / GeoNames。只有用户点击联网搜索后才发送城市关键词；不会发送姓名、出生日期、出生时间、MBTI 或报告。核对地区并选择后，才将坐标和 IANA 时区填入可编辑的自定义地点。断网时可继续使用原有 82 个离线地点或手填坐标。报告也提供官方方法资料与通用资料搜索入口。
+
+**服务与数据边界**：Open-Meteo 地理编码项目目前公开条款面向开源开发者和非商业使用，数据声明为 CC BY-NC 4.0。界面与导出保留来源/许可信息；代码仍采用 MIT，没有引入或打包该服务的 AGPL 实现。商业部署应先确认服务授权，或替换地点查询适配器。服务条款及可用性以提供方为准：[公开说明](https://github.com/open-meteo/geocoding-api#terms--privacy)。
+
+报告 Schema 更新为 `1.1`：保留旧字段，新增 `explanation`、`yearlyTimeline` 与月度 `reading`。CLI 调用同一引擎，仍不联网。传入 `generateDestinyReport(input, now)` 时，默认月份与年份都使用该时间，便于重现。输入/输出契约见 `docs/skill/`。

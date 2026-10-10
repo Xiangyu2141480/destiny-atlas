@@ -35,3 +35,7 @@ The CLI exits `1` for missing arguments and `2` for invalid JSON, schema violati
 ## Limits
 
 See `../limitations.md`. Most importantly: no verified houses/ascendant, no Bazi luck cycles or strength judgment, monthly rather than exact transit search, and no scientific prediction claim.
+
+## Schema 1.1 additions
+
+The report also contains `explanation`, five `yearlyTimeline` records with four quarters each, and a `reading` on each monthly record. Text remains explicit local rule-based interpretation. An optional `customPlace.source` preserves attribution for UI-selected online locations; the CLI itself never performs lookup. The optional `now` argument controls the default month and year consistently.
