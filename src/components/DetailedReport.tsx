@@ -83,4 +83,3 @@ export function DetailedReport({ report, periodUnit, onPeriodChange, focus, onFo
     </div>
   )
 }
-
