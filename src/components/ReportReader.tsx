@@ -45,7 +45,7 @@ export function ReportReader({ report, mode, hasOpenedDetailed, onModeChange, on
   return (
     <main id="report" className="report-reader report-reveal" data-view={mode} tabIndex={-1}>
       <div className="reader-toolbar">
-        <ReportModeSelector value={mode} onChange={changeReadingMode} label="阅读版本" />
+        <div className="reader-choice"><strong>选择报告版本</strong><ReportModeSelector value={mode} onChange={changeReadingMode} label="阅读版本" /></div>
         <div className="reader-tools">
           <button type="button" onClick={() => window.print()}>保存为 PDF</button>
           <details className="reader-more" ref={moreRef} onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) closeTools() }} onKeyDown={(event) => { if (event.key === 'Escape') { event.preventDefault(); closeTools() } }}><summary>更多</summary><div><button type="button" onClick={() => { onDownload(); closeTools() }}>导出完整 JSON</button><a href="#birth-form" onClick={closeTools}>修改出生信息</a></div></details>

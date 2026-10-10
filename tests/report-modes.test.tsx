@@ -15,8 +15,9 @@ function selectMode(name: '精简版' | '详细版') {
 describe('report reading modes', () => {
   it('defaults to a short reading without mounting charts or the sixteen-image gallery', () => {
     render(<App />)
-    expect(within(screen.getByRole('group', { name: '生成报告版本' })).getByRole('radio', { name: '精简版' })).toBeChecked()
+    expect(screen.queryByRole('group', { name: '阅读版本' })).not.toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /生成我的命运图谱/ }))
+    expect(within(screen.getByRole('group', { name: '阅读版本' })).getByRole('radio', { name: '精简版' })).toBeChecked()
     const summary = screen.getByRole('region', { name: '精简报告' })
     expect(within(summary).getByRole('heading', { name: '先做这三件事' })).toBeInTheDocument()
     expect(within(summary).getAllByRole('listitem')).toHaveLength(3)
@@ -58,8 +59,9 @@ describe('report reading modes', () => {
   it('allows a detailed link without putting birth information in the URL', () => {
     window.history.replaceState({}, '', '/?view=detailed')
     render(<App />)
-    expect(within(screen.getByRole('group', { name: '生成报告版本' })).getByRole('radio', { name: '详细版' })).toBeChecked()
+    expect(screen.queryByRole('group', { name: '阅读版本' })).not.toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /生成我的命运图谱/ }))
+    expect(within(screen.getByRole('group', { name: '阅读版本' })).getByRole('radio', { name: '详细版' })).toBeChecked()
     selectMode('精简版')
     expect(new URLSearchParams(window.location.search).get('view')).toBe('summary')
     expect(window.location.search).not.toContain('2002')

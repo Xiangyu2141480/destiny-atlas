@@ -29,6 +29,6 @@ Schema version 1.1 adds yearly readings and explanations. There is no account sy
 
 ## Reading modes (UI 0.3)
 
-`App` owns the generated report and reading mode. `ReportReader` renders `CompactReport` or `DetailedReport` over that same object. It shares focus and period-unit state; the detailed pane is mounted only after the user chooses it, then kept hidden between switches so chart/gallery/period selections survive. Generating a new report resets these selections. No presentation mode enters `BirthInput` or the exported schema.
+`App` owns the generated report and reading mode. The birth form has no mode control; after generation, `ReportReader` presents the summary/detailed choice and renders `CompactReport` or `DetailedReport` over the same object. It shares focus and period-unit state; the detailed pane is mounted only after the user chooses it, then kept hidden between switches so chart/gallery/period selections survive. Generating a new report resets these selections. No presentation mode enters `BirthInput` or the exported schema.
 
 Mode selectors use native radio groups with unique names; only `view=summary|detailed` is written to the URL. Hidden panes are explicitly excluded from layout, accessibility, and printing. Before-print expansion targets only the active pane. The toolbar owns save/export controls for both modes; full JSON export always uses the unmodified report.

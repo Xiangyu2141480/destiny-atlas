@@ -89,6 +89,6 @@ The geocoding provider's published README permits open-source/non-commercial use
 
 ## 0.3: summary and detailed reading modes
 
-The default summary shows a few personal labels, the starting month's focus, three practical actions, and the starting year's reminder. Detailed mode retains all existing charts, periods, and methodology. Switch before generation or while reading; both modes reuse the same report without recalculation. Advice focus is shared, and detailed selections survive switching away and back. A summary-first session does not mount the chart or personality gallery.
+Users fill in the same form and generate once, then choose summary or detailed at the top of the final report. The default summary shows a few personal labels, the starting month's focus, three practical actions, and the starting year's reminder. Detailed mode retains all existing charts, periods, and methodology. Both modes reuse the same report without recalculation. Advice focus is shared, and detailed selections survive switching away and back. A summary-first session does not mount the chart or personality gallery.
 
 Use `?view=summary` or `?view=detailed` to share a mode. No birth data is stored in the URL. Printing includes only the active mode; JSON export remains complete. Algorithms and report schema 1.1 are unchanged.

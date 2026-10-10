@@ -6,8 +6,8 @@ import { selectDetailedReport } from './helpers'
 describe('printing detailed readings', () => {
   it('temporarily includes collapsed explanations and restores the reading state after printing', () => {
     render(<App />)
-    selectDetailedReport()
     fireEvent.click(screen.getByRole('button', { name: /生成我的命运图谱/ }))
+    selectDetailedReport()
     const closed = screen.getByText('四柱信息怎么看').closest('details')!
     const open = screen.getByText('你的做事主题').closest('details')!
     expect(closed.open).toBe(false)

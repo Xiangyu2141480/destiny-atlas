@@ -160,7 +160,7 @@ function App() {
         </nav>
         <div className="hero-grid">
           <HeroIntro />
-          <BirthForm input={input} setInput={setInput} submit={submit} error={error} mode={reportMode} onModeChange={changeReportMode} />
+          <BirthForm input={input} setInput={setInput} submit={submit} error={error} />
         </div>
         <div className="observatory-footer"><span>✦ <b>AS ABOVE, SO WITHIN.</b></span><p>以星辰为镜，探索属于你的内在宇宙</p><a href="#birth-form">从出生坐标开始 ↓</a></div>
 

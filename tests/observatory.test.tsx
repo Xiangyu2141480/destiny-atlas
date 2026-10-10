@@ -27,21 +27,21 @@ describe('observatory interactions', () => {
 
   it('keeps optional observation settings in the generated report after collapsing them', () => {
     render(<App />)
-    selectDetailedReport()
     const summary = screen.getByText('更多观测设置')
     fireEvent.click(summary)
     fireEvent.change(screen.getByPlaceholderText('如何称呼你'), { target: { value: '观测者' } })
     fireEvent.change(screen.getByLabelText(/时间轴起始月/), { target: { value: '2027-01' } })
     fireEvent.click(summary)
     fireEvent.click(screen.getByRole('button', { name: /生成我的命运图谱/ }))
+    selectDetailedReport()
     expect(screen.getByRole('heading', { name: '观测者命运图谱' })).toBeInTheDocument()
     expect(document.querySelector('.timeline button')).toHaveTextContent('2027-01')
   })
 
   it('selects overlapping planets through the readable planet controls', () => {
     render(<App />)
-    selectDetailedReport()
     fireEvent.click(screen.getByRole('button', { name: /生成我的命运图谱/ }))
+    selectDetailedReport()
     fireEvent.click(screen.getByRole('button', { name: /^选择月亮/ }))
     expect(document.querySelector('.chart-readout')).toHaveTextContent('月亮')
     expect(screen.getByRole('button', { name: /^选择月亮/ })).toHaveAttribute('aria-pressed', 'true')

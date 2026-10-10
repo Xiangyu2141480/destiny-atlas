@@ -31,10 +31,10 @@ describe('application flow', () => {
 
   it('renders and generates a report from the public sample', () => {
     render(<App />)
-    selectDetailedReport()
     fireEvent.click(screen.getByText('更多观测设置'))
     fireEvent.change(screen.getByLabelText(/时间轴起始月/), { target: { value: '2026-10' } })
     fireEvent.click(screen.getByRole('button', { name: /生成我的命运图谱/ }))
+    selectDetailedReport()
     expect(screen.getByText('Your Next 24 Months')).toBeInTheDocument()
     expect(screen.getByText('生命路径').parentElement).toHaveTextContent('8')
     expect(screen.getByText(/年度牌 节制/)).toBeInTheDocument()
@@ -47,13 +47,13 @@ describe('application flow', () => {
 
   it('accepts a custom city and shows it in the deterministic report', () => {
     render(<App />)
-    selectDetailedReport()
     fireEvent.click(screen.getByRole('button', { name: '自定义城市' }))
     fireEvent.change(screen.getByLabelText('自定义城市名称'), { target: { value: '测试城' } })
     fireEvent.change(screen.getByLabelText('IANA 时区'), { target: { value: 'Asia/Tokyo' } })
     fireEvent.change(screen.getByLabelText('纬度'), { target: { value: '35' } })
     fireEvent.change(screen.getByLabelText('经度'), { target: { value: '140' } })
     fireEvent.click(screen.getByRole('button', { name: /生成我的命运图谱/ }))
+    selectDetailedReport()
     expect(within(screen.getByRole('region', { name: '详细报告' })).getByText(/测试城/)).toBeInTheDocument()
     expect(screen.getByText(/2002-10-02T17:00:00/)).toBeInTheDocument()
   })
